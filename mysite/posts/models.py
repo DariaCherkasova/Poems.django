@@ -12,7 +12,14 @@ class Post(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='posts'
+        related_name='posts',
+        null=True,
+        default=None
+    )
+    image = models.ImageField(
+        upload_to='posts/images/',
+        null=True,
+        default=None
     )
 
 '''class Group(models.Model):
@@ -28,11 +35,19 @@ class Event(models.Model):
     location = models.CharField(max_length=400)
 
 class Profile(models.Model):
-    user=models.OneToOneField(User, null=True, on_delete=models.CASCADE)
-    bio=models.TextField(null=True, blank=True)
-    profile_pic = models.ImageField(null=True, blank=True, upload_to="img/profile/")
-    facebook = models.CharField(max_length=50, null=True, blank=True)
-    twitter = models.CharField(max_length=50, null=True, blank=True)
-    instagram = models.CharField(max_length=50, null=True, blank=True)
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='profile',
+        null=True,
+        default=None
+    )
+    #author = models.CharField(max_length=140, default='SOME STRING')
+    password=models.TextField()
+    #profile_pic = models.ImageField(null=True, blank=True, upload_to="img/profile/")
+    #facebook = models.CharField(max_length=50, null=True, blank=True)
+    #twitter = models.CharField(max_length=50, null=True, blank=True)
+    #instagram = models.CharField(max_length=50, null=True, blank=True)
 def __str__(self):
     return str(self.user)

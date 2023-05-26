@@ -1,5 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
+from rest_framework import status, viewsets
+
 from .models import Post, User
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
@@ -9,8 +11,14 @@ from django.core.paginator import Paginator #разбить посты на ст
 
 from .forms import PostForm, UserUpdateForm
 
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from django.views.generic.detail import DetailView
 from .models import Profile
+from .serializers import PostSerializer
+from rest_framework.decorators import action
+
 
 #@login_required
 def index(request):
@@ -23,7 +31,7 @@ def index(request):
     #title ='Лев Толстой'
 
     post_list=Post.objects.all().order_by('-pub_date')
-    paginator=Paginator(post_list, 10)
+    paginator=Paginator(post_list, 2)
 
     page_number=request.GET.get('page')
     page_obj=paginator.get_page(page_number)
@@ -132,3 +140,86 @@ def profile_all(request, username,):
     return render(request, 'posts/profile_all.html', context)
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''class PostViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    def get(self, request):
+        queryset = Post.objects.all()
+        # Сериализуем извлечённый набор записей
+        serializer_for_queryset = PostSerializer(
+            instance=queryset,
+            many=True
+        )
+        return Response(serializer_for_queryset.data)
+
+    def post(self, request):
+        serializer = PostSerializer(data=request.data)
+        instance = self.get_object()
+        if instance.author != request.user:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def update(self, request, *args, **kwargs):
+        post = kwargs.pop('post', False)
+        instance = self.get_object()
+        if instance.author != request.user:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        serializer = self.serializer_class(instance, data=request.data, post=post)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+
+    #обновляем
+    def update1(self, request, *args, **kwargs):
+        kwargs['post'] = True
+        self.update(request,  *args, **kwargs)
+
+    #удаление
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.author != request.user:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        self.perform_update(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)'''
